@@ -1,0 +1,7 @@
+Flask==2.3.2
+smtplib==0.1.1
+email==6.0.0
+base64==1.0.0
+re==3.6.3
+random==3.11.3
+openai==0.27.6

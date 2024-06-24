@@ -10,7 +10,7 @@ import random
 from openai import OpenAI
 
 client = OpenAI(
-    api_key='sk-proj-w3PQMuLvmF8DaHxxTcpVT3BlbkFJ0iWm3hRHk9gNDK6aiEXg',
+    api_key=myopenaiapikey,
 )
 app = Flask(__name__)
 

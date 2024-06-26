@@ -150,7 +150,7 @@ def sendpic():
         server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
-        
+        responce = responce['choices'][0]['message']['content']
         return str(response)
 
     except Exception as e:

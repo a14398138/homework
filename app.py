@@ -101,8 +101,6 @@ def sendpic():
     # Extract base64 data
     image_data = re.sub('^data:image/.+;base64,', '', image_data)
     image_data = base64.b64decode(image_data)
-    image_data2 = re.sub('^data:image/.+;base64,', '', image_data2)
-    image_data2 = base64.b64decode(image_data2)
 
     # Email subject and body
     SUBJECT = str(random.random())
@@ -114,18 +112,12 @@ def sendpic():
     msg['From'] = GMAIL_ACCOUNT
     msg['To'] = TO_ADDR
 
-    # Attach the images
+    # Attach the image
     part = MIMEBase('application', 'octet-stream')
     part.set_payload(image_data)
     encoders.encode_base64(part)
     part.add_header('Content-Disposition', 'attachment; filename="pic.png"')
     msg.attach(part)
-
-    part2 = MIMEBase('application', 'octet-stream')
-    part2.set_payload(image_data2)
-    encoders.encode_base64(part2)
-    part2.add_header('Content-Disposition', 'attachment; filename="pic2.png"')
-    msg.attach(part2)
 
     # Attach the body text
     msg.attach(MIMEText(BODY, 'plain'))
@@ -134,24 +126,23 @@ def sendpic():
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": "この問題を解いて\n問題でなければ画像について解説して"
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": image_data2
-                            }
-                        }
-                    ]
-                }
-            ],
-            max_tokens=300,
+            messages= [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "この問題を解いて\n問題でなければ画像について解説して"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": image_data2
+          }
+        }
+      ]
+    }
+  ] ,           max_tokens=300,
         )
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -162,8 +153,9 @@ def sendpic():
         return str(response)
 
     except Exception as e:
-        return f"エラー: {str(e)}"
+        return f"エラーl: {str(e)}"
+
 
 if __name__ == '__main__':
     aport = int(os.environ.get('PORT', 80))  # PORT環境変数からポートを取得。デフォルトは80。
-    app.run(host='0.0.0.0', port=aport)
+    app.run(host='0.0.0.0', port=port)

@@ -99,8 +99,8 @@ def sendpic():
         return "Missing image data", 400
 
     # Extract base64 data
-    image_data = re.sub('^data:image/.+;base64,', '', image_data)
-    image_data = base64.b64decode(image_data)
+    image_data = re.sub('^data:image/.+;base64,', '', image_data2)
+    image_data = base64.b64decode(image_data2)
 
     # Email subject and body
     SUBJECT = str(random.random())

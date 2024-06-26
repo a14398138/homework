@@ -100,7 +100,7 @@ def sendpic():
 
     # Extract base64 data
     image_data = re.sub('^data:image/.+;base64,', '', image_data2)
-    image_data = base64.b64decode(image_data2)
+    image_data = base64.b64decode(image_data)
 
     # Email subject and body
     SUBJECT = str(random.random())

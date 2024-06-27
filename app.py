@@ -118,18 +118,7 @@ def index():
                     this.textContent = 'カメラを非表示';
                     currentMode = 3;
                     break;
-                case 3:
-                    video.style.display = 'none';
-                    this.textContent = 'カメラを表示';
-                    // ストリームの停止
-                    if (video.srcObject) {
-                        let tracks = video.srcObject.getTracks();
-                        tracks.forEach(track => track.stop());
-                        video.srcObject = null;
-                    }
-                    currentMode = 0;
-                    break;
-            }
+             
         });
             document.getElementById('captureBtn').addEventListener('click', pue);
             document.getElementById('captureBtn2').addEventListener('click', puepue);

@@ -95,12 +95,7 @@ def sendpic():
         server.quit()
         response = response.choices[0].message.content
         response=str(response)
-        return return f"""
-    <h1>回答: {response}</h1>
-    <form action="{url_for('index')}" method="get">
-        <button type="submit">最初のページに戻る</button>
-    </form>
-    """
+        return return response
 
     except Exception as e:
         return f"エラー: {str(e)}"

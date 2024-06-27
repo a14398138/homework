@@ -118,6 +118,7 @@ def index():
                     this.textContent = 'カメラを非表示';
                     currentMode = 3;
                     break;
+             }
              
         });
             document.getElementById('captureBtn').addEventListener('click', pue);

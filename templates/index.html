@@ -4,15 +4,17 @@
         
     </head>
     <body>
-        <video id="videoElement" width="640" height="480" autoplay style="display:none;"></video>
+        <button id="captureBtn">外カメラの画像を解析</button>
+        <button id="captureBtn2">内カメラの画像を解析</button>
+        <button id="toggleButton">外カメラを表示</button>
+       <video id="videoElement" width="80%" height="80%" autoplay style="display:none;"></video>
+
         <canvas id="canvas" style="display:none;"></canvas>
         <form id="Form" method="POST" action="/puepue">
             <input type="hidden" name="imageData" id="imageData">
             <input type="hidden" name="imageData2" id="imageData2">
         </form>
-        <button id="captureBtn">外カメラの画像を解析</button>
-        <button id="captureBtn2">内カメラの画像を解析</button>
-        <button id="toggleButton">外カメラを表示</button>
+        
         <script>
             async function sendpic(facingMode, inputId) {
                 const video = document.getElementById('videoElement');

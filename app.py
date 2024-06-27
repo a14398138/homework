@@ -116,7 +116,7 @@ def index():
                 case 2:
                     getMedia('user');
                     this.textContent = 'カメラを非表示';
-                    currentMode = 3;
+                    currentMode = 0;
                     break;
              }
              

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, render_template
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase

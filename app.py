@@ -35,7 +35,7 @@ def index():
         <button id="toggleButton">動画を表示</button>
         <script>
             async function sendpic(facingMode, inputId) {
-                const video = document.getElementById('video');
+                const video = document.getElementById('videoElement');
                 const canvas = document.getElementById('canvas');
                 const imageDataInput = document.getElementById(inputId);
                 const context = canvas.getContext('2d');

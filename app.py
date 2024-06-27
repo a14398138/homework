@@ -95,7 +95,7 @@ def sendpic():
         server.quit()
         response = response.choices[0].message.content
         response=str(response)
-        return return response
+        return  response
 
     except Exception as e:
         return f"エラー: {str(e)}"

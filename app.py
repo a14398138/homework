@@ -32,7 +32,7 @@ def index():
         </form>
         <button id="captureBtn">外カメラの画像を解析</button>
         <button id="captureBtn2">内カメラの画像を解析</button>
-        <button id="toggleButton">動画を表示</button>
+        <button id="toggleButton">外カメラを表示</button>
         <script>
             async function sendpic(facingMode, inputId) {
                 const video = document.getElementById('videoElement');
@@ -203,7 +203,13 @@ def sendpic():
         server.send_message(msg)
         server.quit()
         response = response.choices[0].message.content
-        return str(response)
+        response=str(response)
+        return return f"""
+    <h1>回答: {response}</h1>
+    <form action="{url_for('index')}" method="get">
+        <button type="submit">最初のページに戻る</button>
+    </form>
+    """
 
     except Exception as e:
         return f"エラー: {str(e)}"

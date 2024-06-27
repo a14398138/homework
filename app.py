@@ -94,8 +94,24 @@ def sendpic():
         server.send_message(msg)
         server.quit()
         response = response.choices[0].message.content
-        response=str(response)
-        return  response
+        result=str(response)
+        return render_template_string("""
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        
+    </head>
+    <body>
+        <h1>結果:</h1>
+        <p>{{ result }}</p>
+        <form action="{{ url_for('index') }}" method="get">
+            <button type="submit">トップページに戻る</button>
+        </form>
+    </body>
+    </html>
+    """, result=result)
+
 
     except Exception as e:
         return f"エラー: {str(e)}"

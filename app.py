@@ -76,7 +76,7 @@ def sendpic():
       "content": [
         {
           "type": "text",
-          "text": "この問題を解いて\n問題でなければ画像について解説して"
+          "text": "この問題を解いてください。問題文を再び出力しないでください。問題でなければ画像について解説してください"
         },
         {
           "type": "image_url",
@@ -86,7 +86,7 @@ def sendpic():
         }
       ]
     }
-  ] ,           max_tokens=300,
+  ] ,           max_tokens=3000,
         )
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()

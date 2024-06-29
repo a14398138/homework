@@ -121,7 +121,7 @@ def show_text(subpath):
     try:
         with open(f'texts/{subpath}.txt', 'r', encoding='utf-8') as file:
             content = file.read()
-        return render_template('text_display.html', content=content, title=subpath)
+        return render_template('text_display.html', content=content)
     except FileNotFoundError:
         return render_template('error.html', message="ファイルが見つかりません"), 404
 if __name__ == '__main__':
